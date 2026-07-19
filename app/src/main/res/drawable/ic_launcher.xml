@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Original app icon drawn from scratch: a blue rounded glass tile
+     with a soft top highlight and a small light dot. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#2E6BE6"
+        android:pathData="M32,8 L76,8 A24,24 0 0 1 100,32 L100,76 A24,24 0 0 1 76,100 L32,100 A24,24 0 0 1 8,76 L8,32 A24,24 0 0 1 32,8 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.32"
+        android:pathData="M32,12 L76,12 A20,20 0 0 1 96,32 L96,44 Q54,58 12,44 L12,32 A20,20 0 0 1 32,12 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.9"
+        android:pathData="M30,78 m-6,0 a6,6 0 1 0 12,0 a6,6 0 1 0 -12,0" />
+</vector>

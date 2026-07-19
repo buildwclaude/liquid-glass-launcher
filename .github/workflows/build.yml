@@ -1,0 +1,67 @@
+# This is the "recipe" GitHub Actions follows every time new code is pushed:
+# build the APK on GitHub's servers, then publish it on the Releases page
+# as a plain download link for the phone.
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {} # also allows starting a build by hand from the website
+
+permissions:
+  contents: write # allows publishing the release and saving the signing key
+
+concurrency:
+  group: build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Install Java 17 (needed by the Android build tools)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install Gradle (the build tool)
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.13"
+
+      - name: Create the signing key once and save it to the repo
+        # An APK must be "signed" (stamped) to install. The stamp must be the
+        # SAME every build or the phone refuses updates — so the first build
+        # creates a key file and commits it back to the repo for reuse.
+        run: |
+          if [ ! -f signing/debug.keystore ]; then
+            mkdir -p signing
+            keytool -genkeypair -v \
+              -keystore signing/debug.keystore \
+              -storepass android -keypass android \
+              -alias androiddebugkey \
+              -dname "CN=LiquidGlass Debug" \
+              -keyalg RSA -keysize 2048 -validity 10000
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add signing/debug.keystore
+            git commit -m "Add persistent debug signing key [skip ci]"
+            git push
+          fi
+
+      - name: Build the APK
+        run: gradle :app:assembleDebug
+
+      - name: Publish the APK on the Releases page
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk LiquidGlassLauncher.apk
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest LiquidGlassLauncher.apk \
+            --title "Latest build" \
+            --notes "Newest APK, built $(date -u '+%Y-%m-%d %H:%M') UTC. Download LiquidGlassLauncher.apk below and open it on your phone."
