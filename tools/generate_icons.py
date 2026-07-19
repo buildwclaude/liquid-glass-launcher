@@ -226,12 +226,13 @@ def g_playstore():
 
 @icon("phone", GRAYBG)
 def g_phone():
-    # classic curved handset: a thick quarter-arc with a bulb at each end
+    # classic handset: smooth quarter-ring with a round bulb at each end
     m = new_mask()
     d = ImageDraw.Draw(m)
-    d.arc([140, 100, 480, 440], 95, 175, fill=255, width=84)
-    d.ellipse([250, 394, 342, 486], fill=255)
-    d.ellipse([98, 240, 190, 332], fill=255)
+    d.pieslice([96, 62, 496, 462], 95, 175, fill=255)
+    d.pieslice([178, 144, 414, 380], 95, 175, fill=0)
+    d.ellipse([222, 360, 342, 480], fill=255)
+    d.ellipse([78, 216, 198, 336], fill=255)
     return [(m, GREEN)]
 
 
@@ -292,9 +293,10 @@ def g_whatsapp():
     d.polygon([(150, 330), (196, 396), (128, 400)], fill=255)
     inner = new_mask()
     di = ImageDraw.Draw(inner)
-    di.arc([196, 176, 356, 336], 95, 175, fill=255, width=42)
-    di.ellipse([242, 312, 294, 364], fill=255)
-    di.ellipse([170, 238, 222, 290], fill=255)
+    di.pieslice([196, 176, 356, 336], 95, 175, fill=255)
+    di.pieslice([230, 210, 322, 302], 95, 175, fill=0)
+    di.ellipse([243, 292, 297, 346], fill=255)
+    di.ellipse([186, 235, 240, 289], fill=255)
     return [(m, GREEN), (inner, SILVER)]
 
 
