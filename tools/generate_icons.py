@@ -451,7 +451,7 @@ def g_youtube_big():
     ImageDraw.Draw(body).rounded_rectangle([76, 146, 436, 366], radius=84, fill=255)
     tri = new_mask()
     ImageDraw.Draw(tri).polygon([(212, 192), (212, 320), (332, 256)], fill=255)
-    return [(body, RED), (tri, SILVER)]
+    return [(body, RED), (tri, None)]
 
 
 DUO_ICONS = {
@@ -472,7 +472,15 @@ def make_icon(name, bgcol, layer_fn, nstars, cell, seed):
         union = ImageChops.lighter(union, mask)
     img.alpha_composite(drop_shadow(union))
     for i, (mask, col) in enumerate(layers):
-        img.alpha_composite(mosaic(mask, col, cell=cell, seed=seed + i * 13))
+        if col is None:
+            # solid glossy glass instead of mosaic (color None)
+            solid = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+            solid.paste(Image.new("RGBA", (S, S), (248, 249, 253, 255)), (0, 0), mask)
+            edge = ImageChops.subtract(mask, mask.filter(ImageFilter.MinFilter(5)))
+            solid.paste(Image.new("RGBA", (S, S), (255, 255, 255, 255)), (0, 0), edge)
+            img.alpha_composite(solid)
+        else:
+            img.alpha_composite(mosaic(mask, col, cell=cell, seed=seed + i * 13))
     img.alpha_composite(sparkle_stars(union, nstars, seed))
     return img
 
