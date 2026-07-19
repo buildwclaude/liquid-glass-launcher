@@ -53,15 +53,21 @@ jobs:
             git push
           fi
 
-      - name: Build the APK
-        run: gradle :app:assembleDebug
+      - name: Draw the Disco Icons artwork
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 tools/generate_icons.py iconpack/src/main/res/drawable-nodpi preview.png
 
-      - name: Publish the APK on the Releases page
+      - name: Build both APKs
+        run: gradle :app:assembleDebug :iconpack:assembleDebug
+
+      - name: Publish on the Releases page
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp app/build/outputs/apk/debug/app-debug.apk LiquidGlassLauncher.apk
+          cp iconpack/build/outputs/apk/debug/iconpack-debug.apk DiscoIcons.apk
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest LiquidGlassLauncher.apk \
+          gh release create latest DiscoIcons.apk LiquidGlassLauncher.apk preview.png \
             --title "Latest build" \
-            --notes "Newest APK, built $(date -u '+%Y-%m-%d %H:%M') UTC. Download LiquidGlassLauncher.apk below and open it on your phone."
+            --notes "Built $(date -u '+%Y-%m-%d %H:%M') UTC. DiscoIcons.apk = the icon pack (install this). preview.png = picture of all icons. LiquidGlassLauncher.apk = the old launcher experiment."

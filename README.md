@@ -1,14 +1,36 @@
-# Liquid Glass Launcher
+# Disco Icons (+ Liquid Glass Launcher experiment)
 
-A custom home screen (launcher) for the Nothing Phone 3a, visually inspired by
-a translucent "liquid glass" look — blurred, glassy panels floating over your
-wallpaper. Built with Kotlin and Jetpack Compose for Android 15.
+**Disco Icons** is a "discomorphism" icon pack for the Nothing Phone 3a:
+every app icon rebuilt as a glittering mirror-ball mosaic — disco tiles,
+sparkles, and glossy rounded squares. All artwork is generated from scratch
+by [tools/generate_icons.py](tools/generate_icons.py) during the build;
+nothing is copied from any brand.
 
 All building happens automatically on GitHub's servers (GitHub Actions).
 No root required. Nothing needs to be installed on a computer.
 
-> Apple's design language is visual **inspiration only** — every icon,
-> graphic, and effect in this project is drawn from scratch in code.
+## Using the icon pack
+
+1. Download **DiscoIcons.apk** from the
+   [latest release](https://github.com/buildwclaude/liquid-glass-launcher/releases/latest)
+   and install it (same steps as any APK — see below).
+   The release also contains **preview.png**, a picture of the whole set.
+2. Make sure your home screen is the **Nothing Launcher**
+   (Settings → Apps → Default apps → Home app).
+3. Long-press an empty spot on the home screen →
+   **Customisation** (or **Home settings**) → **Icon pack** → **Disco Icons**.
+4. About 20 popular apps get hand-made disco icons; every other app is
+   automatically framed in a silver mirror tile so the whole screen matches.
+
+If your Nothing Launcher version has no icon-pack option, install a free
+launcher that does (Nova Launcher or Lawnchair from the Play Store), set it
+as the Home app, and pick Disco Icons in its settings.
+
+---
+
+The repository also contains the earlier **Liquid Glass Launcher**
+experiment (`LiquidGlassLauncher.apk` in releases) — a custom home screen
+inspired by translucent glass design. It's parked, not the main project.
 
 ---
 

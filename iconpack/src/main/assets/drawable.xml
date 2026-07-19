@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The list shown when a launcher lets you hand-pick an icon from the pack. -->
+<resources>
+    <version>1</version>
+    <category title="Disco Icons" />
+    <item drawable="youtube" />
+    <item drawable="chrome" />
+    <item drawable="gmail" />
+    <item drawable="maps" />
+    <item drawable="photos" />
+    <item drawable="playstore" />
+    <item drawable="phone" />
+    <item drawable="messages" />
+    <item drawable="settings" />
+    <item drawable="camera" />
+    <item drawable="spotify" />
+    <item drawable="whatsapp" />
+    <item drawable="instagram" />
+    <item drawable="x" />
+    <item drawable="clock" />
+    <item drawable="calendar" />
+    <item drawable="calculator" />
+    <item drawable="files" />
+    <item drawable="drive" />
+    <item drawable="ytmusic" />
+    <item drawable="generic" />
+</resources>
