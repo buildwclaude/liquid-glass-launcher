@@ -420,6 +420,47 @@ def g_appicon():
 
 
 # ---------------------------------------------------------------------------
+# "Duo" pack: only two icons, finer glitter, everything else left untouched.
+# ---------------------------------------------------------------------------
+
+CREAM = (246, 240, 228)
+DUO_ORANGE = (226, 92, 34)
+
+
+def g_claude():
+    # ten-lobed starburst: fat rounded spokes around a center disc
+    m = new_mask()
+    d = ImageDraw.Draw(m)
+    cx = cy = 256
+    r0, r1, w = 44, 178, 54
+    for k in range(10):
+        t = math.radians(k * 36)
+        mx = cx + math.cos(t) * (r0 + r1) / 2
+        my = cy + math.sin(t) * (r0 + r1) / 2
+        rot_rect(d, mx, my, w, r1 - r0, k * 36 - 90)
+        for rr_ in (r0, r1):
+            ex = cx + math.cos(t) * rr_
+            ey = cy + math.sin(t) * rr_
+            d.ellipse([ex - w / 2, ey - w / 2, ex + w / 2, ey + w / 2], fill=255)
+    d.ellipse([cx - 52, cy - 52, cx + 52, cy + 52], fill=255)
+    return [(m, CREAM)]
+
+
+def g_youtube_big():
+    body = new_mask()
+    ImageDraw.Draw(body).rounded_rectangle([76, 146, 436, 366], radius=84, fill=255)
+    tri = new_mask()
+    ImageDraw.Draw(tri).polygon([(212, 192), (212, 320), (332, 256)], fill=255)
+    return [(body, RED), (tri, SILVER)]
+
+
+DUO_ICONS = {
+    "claude": (DUO_ORANGE, g_claude, 3, 16),
+    "youtube": (GRAYBG, g_youtube_big, 3, 16),
+}
+
+
+# ---------------------------------------------------------------------------
 
 
 def make_icon(name, bgcol, layer_fn, nstars, cell, seed):
@@ -528,7 +569,8 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     previews = []
 
-    for i, (name, (bgcol, fn, nstars, cell)) in enumerate(ICONS.items()):
+    items = DUO_ICONS if STYLE == "duo" else ICONS
+    for i, (name, (bgcol, fn, nstars, cell)) in enumerate(items.items()):
         if STYLE == "blueprint":
             img = make_blueprint(fn, seed=11 + i * 31)
         else:
@@ -536,6 +578,26 @@ def main():
         img.save(os.path.join(OUT, f"{name}.png"))
         previews.append((name, img))
         print("drew", name)
+
+    if STYLE == "duo":
+        # no iconback/iconmask/iconupon: all other apps keep their own icons
+        cols, thumb, pad = 6, 200, 16
+        rows = (len(previews) + cols - 1) // cols
+        sheet = Image.new(
+            "RGBA",
+            (cols * (thumb + pad) + pad, rows * (thumb + pad + 26) + pad),
+            (24, 24, 28, 255),
+        )
+        dd = ImageDraw.Draw(sheet)
+        for i, (name, img) in enumerate(previews):
+            r, c = divmod(i, cols)
+            x = pad + c * (thumb + pad)
+            y = pad + r * (thumb + pad + 26)
+            sheet.alpha_composite(img.resize((thumb, thumb)), (x, y))
+            dd.text((x + 4, y + thumb + 4), name, fill=(220, 220, 225, 255))
+        sheet.convert("RGB").save(PREVIEW)
+        print("saved preview to", PREVIEW)
+        return
 
     white = Image.new("RGBA", (S, S), (255, 255, 255, 255))
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Only two apps are themed. There is deliberately NO iconback/iconmask
+     here, so every other app keeps its original icon. -->
+<resources>
+    <!-- YouTube -->
+    <item component="ComponentInfo{com.google.android.youtube/com.google.android.youtube.app.honeycomb.Shell$HomeActivity}" drawable="youtube" />
+    <!-- Claude (a few likely entry points; extras are harmlessly ignored) -->
+    <item component="ComponentInfo{com.anthropic.claude/com.anthropic.claude.MainActivity}" drawable="claude" />
+    <item component="ComponentInfo{com.anthropic.claude/com.anthropic.claude.ui.MainActivity}" drawable="claude" />
+    <item component="ComponentInfo{com.anthropic.claude/com.anthropic.claude.main.MainActivity}" drawable="claude" />
+    <item component="ComponentInfo{com.anthropic.claude/com.anthropic.claude.MainActivityAlias}" drawable="claude" />
+</resources>
