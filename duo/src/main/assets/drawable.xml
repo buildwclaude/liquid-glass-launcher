@@ -3,5 +3,6 @@
     <version>1</version>
     <category title="Disco Duo" />
     <item drawable="youtube" />
+    <item drawable="spotify" />
     <item drawable="claude" />
 </resources>

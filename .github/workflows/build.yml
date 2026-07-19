@@ -59,6 +59,10 @@ jobs:
           python3 tools/generate_icons.py iconpack/src/main/res/drawable-nodpi preview-disco.png disco
           python3 tools/generate_icons.py blueprint/src/main/res/drawable-nodpi preview-blueprint.png blueprint
           python3 tools/generate_icons.py duo/src/main/res/drawable-nodpi preview-duo.png duo
+          # user-supplied artwork (art/duo/*.png) overrides generated icons
+          if [ -d art/duo ] && [ -n "$(ls -A art/duo 2>/dev/null)" ]; then
+            python3 tools/process_custom_icons.py art/duo duo/src/main/res/drawable-nodpi
+          fi
 
       - name: Build the APKs
         run: gradle :app:assembleDebug :iconpack:assembleDebug :blueprint:assembleDebug :duo:assembleDebug
