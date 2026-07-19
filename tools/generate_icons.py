@@ -225,12 +225,12 @@ def g_playstore():
 
 @icon("phone", GRAYBG)
 def g_phone():
+    # classic curved handset: a thick quarter-arc with a bulb at each end
     m = new_mask()
     d = ImageDraw.Draw(m)
-    d.arc([130, 200, 382, 460], 20, 160, fill=255, width=74)
-    d.ellipse([100, 336, 180, 416], fill=255)
-    d.ellipse([332, 336, 412, 416], fill=255)
-    m = m.rotate(-42, center=(256, 320))
+    d.arc([140, 100, 480, 440], 95, 175, fill=255, width=84)
+    d.ellipse([250, 394, 342, 486], fill=255)
+    d.ellipse([98, 240, 190, 332], fill=255)
     return [(m, GREEN)]
 
 
@@ -284,17 +284,16 @@ def g_spotify():
 
 @icon("whatsapp", GRAYBG)
 def g_whatsapp():
+    # green speech bubble with a small silver handset inside
     m = new_mask()
     d = ImageDraw.Draw(m)
     d.ellipse([116, 116, 396, 396], fill=255)
     d.polygon([(150, 330), (196, 396), (128, 400)], fill=255)
-    d.ellipse([186, 186, 326, 326], fill=0)
     inner = new_mask()
     di = ImageDraw.Draw(inner)
-    di.arc([206, 216, 306, 316], 30, 150, fill=255, width=30)
-    di.ellipse([196, 246, 246, 296], fill=255)
-    di.ellipse([266, 246, 316, 296], fill=255)
-    inner = inner.rotate(-40, center=(256, 266))
+    di.arc([196, 176, 356, 336], 95, 175, fill=255, width=42)
+    di.ellipse([242, 312, 294, 364], fill=255)
+    di.ellipse([170, 238, 222, 290], fill=255)
     return [(m, GREEN), (inner, SILVER)]
 
 
@@ -378,11 +377,16 @@ def g_files():
 
 @icon("drive", GRAYBG)
 def g_drive():
-    m = new_mask()
-    d = ImageDraw.Draw(m)
-    d.polygon([(256, 112), (420, 388), (92, 388)], fill=255)
-    d.polygon([(256, 208), (346, 340), (166, 340)], fill=0)
-    return [(m, YELLOW)]
+    # triangle ring in three colors, one per side
+    A, B, C = (256, 112), (420, 388), (92, 388)
+    Ai, Bi, Ci = (256, 208), (346, 340), (166, 340)
+    left = new_mask()
+    ImageDraw.Draw(left).polygon([A, Ai, Ci, C], fill=255)
+    right = new_mask()
+    ImageDraw.Draw(right).polygon([A, B, Bi, Ai], fill=255)
+    bottom = new_mask()
+    ImageDraw.Draw(bottom).polygon([C, B, Bi, Ci], fill=255)
+    return [(left, GREEN), (right, YELLOW), (bottom, BLUE)]
 
 
 @icon("ytmusic", GRAYBG)
