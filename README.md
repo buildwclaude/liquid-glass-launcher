@@ -76,11 +76,21 @@ apps you'd publish to an app store.
 
 ---
 
+## Important: the launcher only "sticks" once it is the default
+
+If you just open Liquid Glass like a normal app, Android treats it like a
+normal app. To make it behave like a real home screen — always there,
+home gesture returns to it — you must set it as the **default Home app**
+(step 3 above). Back and home never exit it after that.
+
 ## Project roadmap
 
-- **Stage 0 (this build):** plain grid of installed apps over the wallpaper,
-  tap to open. Exists only to prove the build-and-install pipeline.
-- **Stage 1:** swipeable home pages, 4-app dock, swipe-up app drawer with
-  search, long-press to move/remove icons.
-- **Stage 2:** the Liquid Glass look — real-time blur (RenderEffect),
-  specular highlights, bright rim light, tilt-reactive shine, fluid motion.
+- **Stage 0 (done):** plain grid of apps, tap to open — proved the
+  build-and-install pipeline works.
+- **Stage 1+2 (this build):** swipe-up glass app drawer with search,
+  swipeable home pages, 4-app glass dock, long-press menus
+  (add/remove/uninstall/app info), glass icon tiles with tilt-reactive
+  highlights and rim light, real blur (RenderEffect) behind the drawer,
+  system wallpaper blur where the device allows it.
+- **Next:** drag-and-drop icon rearranging, folders, icon theming,
+  more refraction effects.

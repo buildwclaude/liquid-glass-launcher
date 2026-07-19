@@ -13,8 +13,8 @@ android {
         applicationId = "com.liquidglass.launcher"
         minSdk = 31        // Android 12 and up (needed for real-time blur later)
         targetSdk = 35     // Android 15, as on the Nothing Phone 3a
-        versionCode = 1
-        versionName = "0.1"
+        versionCode = 2
+        versionName = "0.2"
     }
 
     // A fixed signing key lives in the repo so every build from GitHub
