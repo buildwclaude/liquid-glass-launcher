@@ -24,6 +24,7 @@ S = 512  # canvas size in pixels
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "iconpack/src/main/res/drawable-nodpi"
 PREVIEW = sys.argv[2] if len(sys.argv) > 2 else "preview.png"
+STYLE = sys.argv[3] if len(sys.argv) > 3 else "disco"  # "disco" or "blueprint"
 
 # Palette (all invented colors, tuned for the disco look)
 SILVER = (226, 229, 236)
@@ -433,28 +434,123 @@ def make_icon(name, bgcol, layer_fn, nstars, cell, seed):
     return img
 
 
+def tile_mask(radius=112, inset=10):
+    m = new_mask()
+    ImageDraw.Draw(m).rounded_rectangle(
+        [inset, inset, S - inset, S - inset], radius=radius, fill=255
+    )
+    return m
+
+
+def bp_base(radius=112):
+    """Blueprint style: frosted glass tile with graph-paper grid and
+    drafting construction lines."""
+    img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle([10, 10, S - 10, S - 10], radius=radius, fill=(238, 242, 248, 46))
+    grid = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(grid)
+    for x in range(10, S - 9, 16):
+        gd.line([x, 10, x, S - 10], fill=(255, 255, 255, 20), width=1)
+    for y in range(10, S - 9, 16):
+        gd.line([10, y, S - 10, y], fill=(255, 255, 255, 20), width=1)
+    for x in range(10, S - 9, 64):
+        gd.line([x, 10, x, S - 10], fill=(255, 255, 255, 34), width=1)
+    for y in range(10, S - 9, 64):
+        gd.line([10, y, S - 10, y], fill=(255, 255, 255, 34), width=1)
+    # drafting guides: corner-to-corner diagonals and inscribed circles
+    gd.line([10, 10, S - 10, S - 10], fill=(255, 255, 255, 48), width=2)
+    gd.line([S - 10, 10, 10, S - 10], fill=(255, 255, 255, 48), width=2)
+    gd.ellipse([36, 36, S - 36, S - 36], outline=(255, 255, 255, 55), width=2)
+    gd.ellipse([116, 116, S - 116, S - 116], outline=(255, 255, 255, 38), width=2)
+    a = ImageChops.multiply(grid.split()[3], tile_mask(radius))
+    grid.putalpha(a)
+    img.alpha_composite(grid)
+    # gloss and rim
+    gloss = new_mask()
+    ImageDraw.Draw(gloss).rounded_rectangle(
+        [10, 10, S - 10, int(S * 0.45)], radius=radius, fill=18
+    )
+    img.paste(Image.new("RGBA", (S, S), (255, 255, 255, 255)), (0, 0), gloss)
+    d.rounded_rectangle(
+        [10, 10, S - 10, S - 10], radius=radius, outline=(255, 255, 255, 130), width=3
+    )
+    d.rounded_rectangle(
+        [17, 17, S - 17, S - 17], radius=radius - 7, outline=(255, 255, 255, 38), width=2
+    )
+    return img
+
+
+def make_blueprint(layer_fn, seed):
+    """Glyph as layered frosted glass with bright edges and guide circles."""
+    rnd = random.Random(seed)
+    img = bp_base()
+    layers = layer_fn()
+    union = new_mask()
+    for m, _ in layers:
+        union = ImageChops.lighter(union, m)
+    img.alpha_composite(drop_shadow(union, dy=8, blur=12, alpha=55))
+    for i, (m, _) in enumerate(layers):
+        fill = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        sheet = Image.new("RGBA", (S, S), (244, 248, 255, 86 + (i % 3) * 20))
+        fill.paste(sheet, (0, 0), m)
+        img.alpha_composite(fill)
+    edge = ImageChops.subtract(union, union.filter(ImageFilter.MinFilter(7)))
+    eimg = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    eimg.paste(Image.new("RGBA", (S, S), (255, 255, 255, 215)), (0, 0), edge)
+    img.alpha_composite(eimg)
+    # construction circles hugging the glyph, like a work-in-progress drawing
+    g = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(g)
+    bb = union.getbbox()
+    if bb:
+        x0, y0, x1, y1 = bb
+        cx, cy = (x0 + x1) // 2, (y0 + y1) // 2
+        r = max(x1 - x0, y1 - y0) // 2 + 14
+        gd.ellipse([cx - r, cy - r, cx + r, cy + r], outline=(255, 255, 255, 78), width=2)
+        gd.ellipse([x0 - 8, y0 - 8, x1 + 8, y1 + 8], outline=(255, 255, 255, 42), width=1)
+        anchors = [(x0, y0), (x1, y0), (x0, y1), (x1, y1), (cx, y0), (cx, y1), (x0, cy), (x1, cy)]
+        for px, py in rnd.sample(anchors, 3):
+            rr_ = rnd.randrange(20, 34)
+            gd.ellipse([px - rr_, py - rr_, px + rr_, py + rr_], outline=(255, 255, 255, 88), width=2)
+    ga = ImageChops.multiply(g.split()[3], tile_mask())
+    g.putalpha(ga)
+    img.alpha_composite(g)
+    # nothing may stick out of the tile
+    final_a = ImageChops.multiply(img.split()[3], tile_mask())
+    img.putalpha(final_a)
+    return img
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     previews = []
 
     for i, (name, (bgcol, fn, nstars, cell)) in enumerate(ICONS.items()):
-        img = make_icon(name, bgcol, fn, nstars, cell, seed=11 + i * 31)
+        if STYLE == "blueprint":
+            img = make_blueprint(fn, seed=11 + i * 31)
+        else:
+            img = make_icon(name, bgcol, fn, nstars, cell, seed=11 + i * 31)
         img.save(os.path.join(OUT, f"{name}.png"))
         previews.append((name, img))
         print("drew", name)
 
-    # iconback: neutral disco tile behind apps without a hand-made icon
-    back = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-    tile = new_mask()
-    ImageDraw.Draw(tile).rounded_rectangle([10, 10, S - 10, S - 10], radius=112, fill=255)
-    back.alpha_composite(mosaic(tile, (88, 92, 104), cell=30, seed=99))
-    gloss = new_mask()
-    ImageDraw.Draw(gloss).rounded_rectangle([10, 10, S - 10, int(S * 0.45)], radius=112, fill=30)
     white = Image.new("RGBA", (S, S), (255, 255, 255, 255))
-    back.paste(white, (0, 0), gloss)
-    ImageDraw.Draw(back).rounded_rectangle(
-        [10, 10, S - 10, S - 10], radius=112, outline=(255, 255, 255, 80), width=4
-    )
+
+    # iconback: the tile drawn behind apps without a hand-made icon
+    if STYLE == "blueprint":
+        back = bp_base()
+    else:
+        back = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        tile = new_mask()
+        ImageDraw.Draw(tile).rounded_rectangle([10, 10, S - 10, S - 10], radius=112, fill=255)
+        back.alpha_composite(mosaic(tile, (88, 92, 104), cell=30, seed=99))
+        gloss = new_mask()
+        ImageDraw.Draw(gloss).rounded_rectangle([10, 10, S - 10, int(S * 0.45)], radius=112, fill=30)
+        back.paste(white, (0, 0), gloss)
+        ImageDraw.Draw(back).rounded_rectangle(
+            [10, 10, S - 10, S - 10], radius=112, outline=(255, 255, 255, 80), width=4
+        )
     back.save(os.path.join(OUT, "iconback.png"))
     previews.append(("iconback", back))
 
@@ -465,14 +561,15 @@ def main():
     )
     maskimg.save(os.path.join(OUT, "iconmask.png"))
 
-    # iconupon: gloss + sparkles laid over every framed icon
+    # iconupon: sheen laid over every framed icon (plus sparkles for disco)
     upon = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     gm = new_mask()
     ImageDraw.Draw(gm).rounded_rectangle([10, 10, S - 10, int(S * 0.4)], radius=112, fill=26)
     upon.paste(white, (0, 0), gm)
-    full = new_mask()
-    ImageDraw.Draw(full).rounded_rectangle([40, 40, S - 40, S - 40], radius=90, fill=255)
-    upon.alpha_composite(sparkle_stars(full, 2, seed=5))
+    if STYLE != "blueprint":
+        full = new_mask()
+        ImageDraw.Draw(full).rounded_rectangle([40, 40, S - 40, S - 40], radius=90, fill=255)
+        upon.alpha_composite(sparkle_stars(full, 2, seed=5))
     upon.save(os.path.join(OUT, "iconupon.png"))
 
     print("drew iconback, iconmask, iconupon")

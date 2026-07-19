@@ -18,3 +18,4 @@ dependencyResolutionManagement {
 rootProject.name = "LiquidGlassLauncher"
 include(":app")
 include(":iconpack")
+include(":blueprint")
