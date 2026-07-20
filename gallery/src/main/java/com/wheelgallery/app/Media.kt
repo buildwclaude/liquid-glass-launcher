@@ -5,8 +5,10 @@ import android.content.Context
 import android.net.Uri
 import android.provider.BaseColumns
 import android.provider.MediaStore
+import androidx.compose.runtime.Immutable
 
 /** One photo or video on the phone. */
+@Immutable
 data class MediaItem(
     val uri: Uri,
     val dateMillis: Long,

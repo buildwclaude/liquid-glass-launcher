@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.VideoFrameDecoder
+import coil.request.ImageRequest
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -309,9 +310,10 @@ private fun GroupedGrid(
                     modifier = Modifier.padding(start = 8.dp, top = 14.dp, bottom = 6.dp),
                 )
             }
-            items(group, key = { it.uri.toString() + it.dateMillis }) { m ->
+            items(group.size, key = { group[it].uri.toString() + group[it].dateMillis }) { i ->
+                val m = group[i]
                 MediaCell(m, m.uri.toString() in favorites, imageLoader) {
-                    onTap(group, group.indexOf(m))
+                    onTap(group, i)
                 }
             }
         }
@@ -343,6 +345,16 @@ private fun MediaCell(
     imageLoader: ImageLoader,
     onTap: () -> Unit,
 ) {
+    val context = LocalContext.current
+    // Decode a small thumbnail, never the full camera file — grids only
+    // need ~120px squares, and full 12MP decodes are what cause stutter.
+    val thumbRequest = remember(m.uri) {
+        ImageRequest.Builder(context)
+            .data(m.uri)
+            .size(300)
+            .crossfade(false)
+            .build()
+    }
     Box(
         Modifier
             .padding(1.dp)
@@ -352,7 +364,7 @@ private fun MediaCell(
             .clickable(onClick = onTap)
     ) {
         AsyncImage(
-            model = m.uri,
+            model = thumbRequest,
             contentDescription = m.name,
             imageLoader = imageLoader,
             contentScale = ContentScale.Crop,

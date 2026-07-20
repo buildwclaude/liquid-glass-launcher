@@ -72,7 +72,15 @@ private fun WheelColumn(
     LaunchedEffect(centered) {
         // The mechanical tick, fired once per row passed.
         view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-        onSelected(((centered % values.size) + values.size) % values.size)
+    }
+
+    // Report the selection only once the wheel has settled, so the photo
+    // grid re-filters exactly once per spin instead of on every tick —
+    // that constant re-filtering was the main cause of dropped frames.
+    LaunchedEffect(state.isScrollInProgress) {
+        if (!state.isScrollInProgress) {
+            onSelected(((centered % values.size) + values.size) % values.size)
+        }
     }
 
     LazyColumn(
