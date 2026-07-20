@@ -65,7 +65,7 @@ jobs:
           fi
 
       - name: Build the APKs
-        run: gradle :app:assembleDebug :iconpack:assembleDebug :blueprint:assembleDebug :duo:assembleDebug
+        run: gradle :app:assembleDebug :iconpack:assembleDebug :blueprint:assembleDebug :duo:assembleDebug :gallery:assembleDebug
 
       - name: Publish on the Releases page
         env:
@@ -75,7 +75,8 @@ jobs:
           cp iconpack/build/outputs/apk/debug/iconpack-debug.apk DiscoIcons.apk
           cp blueprint/build/outputs/apk/debug/blueprint-debug.apk BlueprintIcons.apk
           cp duo/build/outputs/apk/debug/duo-debug.apk DiscoDuo.apk
+          cp gallery/build/outputs/apk/debug/gallery-debug.apk PhotoWheel.apk
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest DiscoIcons.apk BlueprintIcons.apk DiscoDuo.apk LiquidGlassLauncher.apk preview-disco.png preview-blueprint.png preview-duo.png \
+          gh release create latest PhotoWheel.apk DiscoIcons.apk BlueprintIcons.apk DiscoDuo.apk LiquidGlassLauncher.apk preview-disco.png preview-blueprint.png preview-duo.png \
             --title "Latest build" \
-            --notes "Built $(date -u '+%Y-%m-%d %H:%M') UTC. Icon packs: DiscoIcons.apk (mirror-ball, all apps), BlueprintIcons.apk (frosted drafting glass, all apps), DiscoDuo.apk (YouTube + Claude only, everything else untouched). Install any, then pick one in your launcher's icon-pack setting. The preview-*.png files show every icon. LiquidGlassLauncher.apk = the old launcher experiment."
+            --notes "Built $(date -u '+%Y-%m-%d %H:%M') UTC. PhotoWheel.apk = gallery app with the iOS-style date picker wheel. Icon packs: DiscoIcons.apk (mirror-ball), BlueprintIcons.apk (frosted drafting glass), DiscoDuo.apk (YouTube + Spotify + Claude custom art). The preview-*.png files show every icon. LiquidGlassLauncher.apk = the old launcher experiment."

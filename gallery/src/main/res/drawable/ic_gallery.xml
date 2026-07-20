@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Original app icon: dark tile, mountain + sun photo glyph. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#17181C"
+        android:pathData="M32,8 L76,8 A24,24 0 0 1 100,32 L100,76 A24,24 0 0 1 76,100 L32,100 A24,24 0 0 1 8,76 L8,32 A24,24 0 0 1 32,8 Z" />
+    <path
+        android:fillColor="#F3C63F"
+        android:pathData="M70,30 m-9,0 a9,9 0 1 0 18,0 a9,9 0 1 0 -18,0" />
+    <path
+        android:fillColor="#E8E9EE"
+        android:pathData="M16,84 L42,46 L58,68 L68,56 L92,84 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.25"
+        android:pathData="M32,12 L76,12 A20,20 0 0 1 96,32 L96,40 Q54,52 12,40 L12,32 A20,20 0 0 1 32,12 Z" />
+</vector>
