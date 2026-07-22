@@ -51,7 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -429,8 +429,7 @@ private fun Artwork(song: Song, modifier: Modifier) {
         bitmap = withContext(Dispatchers.IO) {
             try {
                 context.contentResolver.openInputStream(song.embeddedArtUri)?.use { s ->
-                    android.graphics.BitmapFactory.decodeStream(s)
-                        ?.asImageBitmapSafe()
+                    android.graphics.BitmapFactory.decodeStream(s)?.asImageBitmap()
                 }
             } catch (_: Exception) {
                 null
@@ -447,9 +446,6 @@ private fun Artwork(song: Song, modifier: Modifier) {
         }
     }
 }
-
-private fun android.graphics.Bitmap.asImageBitmapSafe() =
-    androidx.compose.ui.graphics.asImageBitmap(this)
 
 /** Deterministic soft gradient from a string, for art-less tracks. */
 private fun gradientFor(seed: String): androidx.compose.ui.graphics.Brush {
