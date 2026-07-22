@@ -13,8 +13,8 @@ android {
         applicationId = "com.localmusic.player"
         minSdk = 31
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1"
+        versionCode = 2
+        versionName = "0.2"
     }
 
     signingConfigs {
@@ -52,6 +52,9 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
+    // Palette pulls the dominant colors out of album art for the
+    // color-bleed background, like Apple Music / Spotify now-playing.
+    implementation("androidx.palette:palette-ktx:1.0.0")
     // Media3 / ExoPlayer: the robust playback engine (MP3, AAC, FLAC,
     // OGG, Opus, WAV, MKV audio and more), plus MediaSession for
     // lock-screen and notification controls and background playback.
