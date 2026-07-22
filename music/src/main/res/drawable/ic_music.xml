@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Original app icon: dark tile with a music note. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#141018"
+        android:pathData="M32,8 L76,8 A24,24 0 0 1 100,32 L100,76 A24,24 0 0 1 76,100 L32,100 A24,24 0 0 1 8,76 L8,32 A24,24 0 0 1 32,8 Z" />
+    <path
+        android:fillColor="#C9A7FF"
+        android:pathData="M64,30 L64,66 A11,9 0 1 1 58,58 L58,42 L44,46 L44,72 A11,9 0 1 1 38,64 L38,38 Z" />
+</vector>

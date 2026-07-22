@@ -65,7 +65,7 @@ jobs:
           fi
 
       - name: Build the APKs
-        run: gradle :app:assembleDebug :iconpack:assembleDebug :blueprint:assembleDebug :duo:assembleDebug :gallery:assembleDebug
+        run: gradle :app:assembleDebug :iconpack:assembleDebug :blueprint:assembleDebug :duo:assembleDebug :gallery:assembleDebug :music:assembleDebug
 
       - name: Publish on the Releases page
         env:
@@ -76,7 +76,8 @@ jobs:
           cp blueprint/build/outputs/apk/debug/blueprint-debug.apk BlueprintIcons.apk
           cp duo/build/outputs/apk/debug/duo-debug.apk DiscoDuo.apk
           cp gallery/build/outputs/apk/debug/gallery-debug.apk PhotoWheel.apk
+          cp music/build/outputs/apk/debug/music-debug.apk MusicPlayer.apk
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest PhotoWheel.apk DiscoIcons.apk BlueprintIcons.apk DiscoDuo.apk LiquidGlassLauncher.apk preview-disco.png preview-blueprint.png preview-duo.png \
+          gh release create latest MusicPlayer.apk PhotoWheel.apk DiscoIcons.apk BlueprintIcons.apk DiscoDuo.apk LiquidGlassLauncher.apk preview-disco.png preview-blueprint.png preview-duo.png \
             --title "Latest build" \
-            --notes "Built $(date -u '+%Y-%m-%d %H:%M') UTC. PhotoWheel.apk = gallery app with the iOS-style date picker wheel. Icon packs: DiscoIcons.apk (mirror-ball), BlueprintIcons.apk (frosted drafting glass), DiscoDuo.apk (YouTube + Spotify + Claude custom art). The preview-*.png files show every icon. LiquidGlassLauncher.apk = the old launcher experiment."
+            --notes "Built $(date -u '+%Y-%m-%d %H:%M') UTC. MusicPlayer.apk = local music player (Stage 1: plays your files, lock-screen controls). PhotoWheel.apk = gallery with date picker wheel. Icon packs: DiscoIcons.apk (mirror-ball), BlueprintIcons.apk (frosted drafting glass), DiscoDuo.apk (YouTube + Spotify + Claude custom art). The preview-*.png files show every icon. LiquidGlassLauncher.apk = the old launcher experiment."
